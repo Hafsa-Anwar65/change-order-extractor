@@ -1,0 +1,17 @@
+{
+  "source": "co_006_pdf.pdf",
+  "needs_review": false,
+  "rules_only_misses": [],
+  "values": {
+    "change_order_number": "CO-008",
+    "date": "2026-04-09",
+    "project_name": "Oakridge Public Library - Roof Replacement",
+    "owner": "Oakridge Library District",
+    "contractor": "Summit Roofing & Sheet Metal",
+    "description": "Replace 400 sq ft of deteriorated roof decking discovered after tear-off of the existing membrane. Includes new plywood sheathing.",
+    "amount": "9480.00",
+    "contract_sum_before": "640000.00",
+    "contract_sum_after": "649480.00",
+    "schedule_impact_days": 0
+  }
+}

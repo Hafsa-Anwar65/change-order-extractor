@@ -1,0 +1,17 @@
+{
+  "source": "co_001_clean.txt",
+  "needs_review": false,
+  "rules_only_misses": [],
+  "values": {
+    "change_order_number": "CO-014",
+    "date": "2026-03-14",
+    "project_name": "Riverside Medical Center - East Wing Expansion",
+    "owner": "Riverside Health Partners LLC",
+    "contractor": "Halloran Construction Inc.",
+    "description": "Furnish and install additional fire-rated drywall at Level 2 corridor per RFI-087 and Architect's Supplemental Instruction ASI-12. Includes labor, materials, and finishing.",
+    "amount": "18750.00",
+    "contract_sum_before": "4250000.00",
+    "contract_sum_after": "4268750.00",
+    "schedule_impact_days": 5
+  }
+}

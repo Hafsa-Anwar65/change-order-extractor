@@ -1,0 +1,17 @@
+{
+  "source": "co_004_table_layout.txt",
+  "needs_review": false,
+  "rules_only_misses": [],
+  "values": {
+    "change_order_number": "CO-031",
+    "date": "2026-06-02",
+    "project_name": "Westgate Logistics Center - Building C",
+    "owner": "Westgate Industrial Properties",
+    "contractor": "Pinnacle Mechanical Services",
+    "description": "Relocate three rooftop HVAC units 12 ft east to clear new skylight framing. Includes crane time, new curb adapters and re-routed refrigerant lines.",
+    "amount": "27615.50",
+    "contract_sum_before": "890000.00",
+    "contract_sum_after": "917615.50",
+    "schedule_impact_days": 3
+  }
+}

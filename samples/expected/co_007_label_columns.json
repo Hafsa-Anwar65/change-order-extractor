@@ -1,0 +1,17 @@
+{
+  "source": "co_007_label_columns.txt",
+  "needs_review": false,
+  "rules_only_misses": [],
+  "values": {
+    "change_order_number": "CO-021",
+    "date": "2026-03-03",
+    "project_name": "Greenfield Community Pool - Filtration Upgrade",
+    "owner": "Greenfield Parks Department",
+    "contractor": "Bluewater Mechanical LLC",
+    "description": "Replace two sand filters with a single cartridge filtration unit per addendum 3. Includes demolition and disposal of existing tanks.",
+    "amount": "22900.00",
+    "contract_sum_before": "510000.00",
+    "contract_sum_after": "532900.00",
+    "schedule_impact_days": 7
+  }
+}

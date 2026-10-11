@@ -1,0 +1,32 @@
+CHANGE ORDER
+
+Change Order Number
+CO-031
+
+Date Issued
+June 2, 2026
+
+Project Name
+Westgate Logistics Center - Building C
+
+Owner
+Westgate Industrial Properties
+
+Contractor
+Pinnacle Mechanical Services
+
+Description of Change
+Relocate three rooftop HVAC units 12 ft east to clear new
+skylight framing. Includes crane time, new curb adapters and
+re-routed refrigerant lines.
+
+Net Change
+$27,615.50
+
+Previous Contract Sum
+$890,000.00
+New Contract Sum
+$917,615.50
+
+Schedule Impact
+Add 3 working days

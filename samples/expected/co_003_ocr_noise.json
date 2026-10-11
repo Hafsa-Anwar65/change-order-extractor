@@ -1,0 +1,17 @@
+{
+  "source": "co_003_ocr_noise.txt",
+  "needs_review": true,
+  "rules_only_misses": ["change_order_number"],
+  "values": {
+    "change_order_number": "22",
+    "date": "2026-03-04",
+    "project_name": "Harbor Point Parking Structure",
+    "owner": "City of Harbor Point",
+    "contractor": "Meridian Concrete & Steel Co.",
+    "description": "Additional rebar at Level 3 slab edge per structural engineer directive SD-09. Cost includes testing.",
+    "amount": "12450.00",
+    "contract_sum_before": "2100000.00",
+    "contract_sum_after": "2112450.00",
+    "schedule_impact_days": 0
+  }
+}

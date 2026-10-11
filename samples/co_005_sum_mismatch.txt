@@ -1,0 +1,16 @@
+CHANGE ORDER NO. CO-052
+
+Date: 08/21/2026
+Project: Lakeside Senior Living - Phase 2
+Owner: Lakeside Senior Living Partners
+Contractor: Cobalt Electric Group
+
+Description of Change:
+Upgrade emergency generator from 150 kW to 200 kW per revised load
+calculations. Includes new transfer switch.
+
+Contract Sum Prior to This Change Order: $3,480,000.00
+Net Change by This Change Order: $41,300.00
+New Contract Sum Including This Change Order: $3,525,300.00
+
+Schedule Impact: 10 calendar days

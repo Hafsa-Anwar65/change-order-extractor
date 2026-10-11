@@ -1,0 +1,17 @@
+{
+  "source": "co_005_sum_mismatch.txt",
+  "needs_review": true,
+  "rules_only_misses": [],
+  "values": {
+    "change_order_number": "CO-052",
+    "date": "2026-08-21",
+    "project_name": "Lakeside Senior Living - Phase 2",
+    "owner": "Lakeside Senior Living Partners",
+    "contractor": "Cobalt Electric Group",
+    "description": "Upgrade emergency generator from 150 kW to 200 kW per revised load calculations. Includes new transfer switch.",
+    "amount": "41300.00",
+    "contract_sum_before": "3480000.00",
+    "contract_sum_after": "3525300.00",
+    "schedule_impact_days": 10
+  }
+}

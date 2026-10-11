@@ -1,0 +1,17 @@
+{
+  "source": "co_008_header_table.txt",
+  "needs_review": false,
+  "rules_only_misses": [],
+  "values": {
+    "change_order_number": "CO-117",
+    "date": "2026-07-22",
+    "project_name": "Pioneer Square Garage - Level 4 Repairs",
+    "owner": "Pioneer Square Parking Authority",
+    "contractor": "Ironclad Restoration Inc.",
+    "description": "Repair delaminated slab sections at gridlines C-F per engineer's field report 14.",
+    "amount": "64200.00",
+    "contract_sum_before": "1250000.00",
+    "contract_sum_after": "1314200.00",
+    "schedule_impact_days": 12
+  }
+}

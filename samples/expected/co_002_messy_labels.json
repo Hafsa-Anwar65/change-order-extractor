@@ -1,0 +1,17 @@
+{
+  "source": "co_002_messy_labels.txt",
+  "needs_review": false,
+  "rules_only_misses": [],
+  "values": {
+    "change_order_number": "07",
+    "date": "2026-03-14",
+    "project_name": "Brookfield Elementary School - Gymnasium Renovation",
+    "owner": "Brookfield Unified School District",
+    "contractor": "Delta Ridge Builders, LLC",
+    "description": "Delete scheduled epoxy floor coating in locker rooms (Rooms 112, 114) and substitute sealed concrete per owner request. Credit to owner.",
+    "amount": "-3200.00",
+    "contract_sum_before": "1900000.00",
+    "contract_sum_after": "1896800.00",
+    "schedule_impact_days": -2
+  }
+}

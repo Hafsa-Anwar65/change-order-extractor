@@ -1,0 +1,14 @@
+CHANGE ORDER SUMMARY
+
+| CO No. | Date Issued | Project | Contractor |
+| CO-117 | 07/22/2026 | Pioneer Square Garage - Level 4 Repairs | Ironclad Restoration Inc. |
+
+Owner: Pioneer Square Parking Authority
+
+Description of Change:
+Repair delaminated slab sections at gridlines C-F per engineer's field report 14.
+
+| Net Change | Previous Contract Sum | New Contract Sum |
+| $64,200.00 | $1,250,000.00 | $1,314,200.00 |
+
+Schedule Impact: 12 days

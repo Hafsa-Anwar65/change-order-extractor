@@ -1,0 +1,21 @@
+CHANGE ORDER
+Change Order No.: CO-101
+Date: 2026-05-01
+Project: Cedar Ridge School - Gym Addition
+Owner: Cedar Ridge ISD
+Contractor: Apex Builders
+Description of Change:
+Add two exterior hose bibs at the east wall.
+Net Change by This Change Order: $1,850.00
+Schedule Impact: None
+
+CHANGE ORDER
+Change Order No.: CO-102
+Date: 2026-05-09
+Project: Cedar Ridge School - Gym Addition
+Owner: Cedar Ridge ISD
+Contractor: Apex Builders
+Description of Change:
+Credit for deleted bleacher railing finish upgrade.
+Net Change by This Change Order: ($2,400.00)
+Schedule Impact: None

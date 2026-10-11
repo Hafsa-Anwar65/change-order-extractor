@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "change-order-extractor"
+version = "0.1.0"
+description = "Extract structured, validated, confidence-scored fields from messy construction change orders."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.6",
+    "pypdf>=4.0",
+]
+
+[project.optional-dependencies]
+llm = ["anthropic>=0.40"]
+ocr = ["rapidocr-onnxruntime>=1.2", "pypdfium2>=4", "pillow>=10"]
+web = ["fastapi>=0.110", "uvicorn>=0.29", "python-multipart>=0.0.9"]
+dev = [
+    "anthropic>=0.40",
+    "mypy>=1.10",
+    "pytest>=8",
+    "pypdfium2>=4",
+    "pillow>=10",
+    "fastapi>=0.110",
+    "httpx>=0.27",
+    "python-multipart>=0.0.9",
+    "uvicorn>=0.29",
+    "reportlab>=4",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+co-extract = "co_extract.cli:main"
+co-extract-web = "co_extract.web:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["src"]
+
+[[tool.mypy.overrides]]
+module = ["rapidocr_onnxruntime.*", "pypdfium2.*", "PIL.*", "numpy.*"]
+ignore_missing_imports = true

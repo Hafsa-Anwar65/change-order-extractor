@@ -1,0 +1,22 @@
+CHANGE ORDER
+
+Change Order No.
+Date
+Project
+Owner
+Contractor
+
+CO-021
+March 3, 2026
+Greenfield Community Pool - Filtration Upgrade
+Greenfield Parks Department
+Bluewater Mechanical LLC
+
+Description of Change:
+Replace two sand filters with a single cartridge filtration unit
+per addendum 3. Includes demolition and disposal of existing tanks.
+
+Net Change by This Change Order: $22,900.00
+Contract Sum Prior to This Change Order: $510,000.00
+New Contract Sum Including This Change Order: $532,900.00
+Schedule Impact: 7 calendar days

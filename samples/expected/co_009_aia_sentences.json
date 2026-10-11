@@ -1,0 +1,17 @@
+{
+  "source": "co_009_aia_sentences.txt",
+  "needs_review": false,
+  "rules_only_misses": [],
+  "values": {
+    "change_order_number": "009",
+    "date": "2026-10-03",
+    "project_name": "Maple Court Apartments - Building B",
+    "owner": "Maple Court Holdings LLC",
+    "contractor": "Redwood Framing Co.",
+    "description": "Delete the second-floor balcony railings at units 201-208 and substitute a lower-cost powder-coated option approved by the owner.",
+    "amount": "-8400.00",
+    "contract_sum_before": "1215000.00",
+    "contract_sum_after": "1206600.00",
+    "schedule_impact_days": 0
+  }
+}
