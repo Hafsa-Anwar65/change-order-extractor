@@ -60,6 +60,16 @@ def test_amount_is_not_derived_when_present_or_when_inputs_are_missing() -> None
     assert derive_amount(make_fields(contract_sum_before=Decimal("1"))) == []
 
 
+def test_contract_sum_after_is_derived_from_before_and_amount() -> None:
+    fields = make_fields(contract_sum_before=Decimal("1000.00"), amount=Decimal("250.50"))
+    issues = derive_amount(fields)
+    assert fields["contract_sum_after"].value == Decimal("1250.50")
+    assert fields["contract_sum_after"].method is Method.DERIVED
+    assert fields["contract_sum_after"].confidence == 0.72  # 0.9 * 0.8
+    assert codes(issues) == ["derived_field"]
+    assert issues[0].field == "contract_sum_after"
+
+
 # ------------------------------------------------------------------ check_fields
 def test_complete_document_has_no_issues() -> None:
     assert check_fields(complete_fields(), today=TODAY) == []
@@ -132,5 +142,7 @@ def test_needs_review_rules() -> None:
     assert needs_review(fields, [], min_confidence=0.9) is True  # below the bar
     error = Issue(code="x", severity=Severity.ERROR, message="m")
     warning = Issue(code="x", severity=Severity.WARNING, message="m")
+    ocr_warning = Issue(code="ocr_text", severity=Severity.WARNING, message="m")
     assert needs_review(fields, [error], min_confidence=0.7) is True
     assert needs_review(fields, [warning], min_confidence=0.7) is False
+    assert needs_review(fields, [ocr_warning], min_confidence=0.7) is True
