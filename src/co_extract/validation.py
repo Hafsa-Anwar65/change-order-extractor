@@ -24,26 +24,46 @@ _ADDITION_WORDS = re.compile(
 
 
 def derive_amount(fields: Fields) -> list[Issue]:
-    """If the amount is missing but the contract sums before and after are known, derive it."""
+    """Derive missing arithmetic fields from the two that are present."""
     amount, before, after = (
         fields[n] for n in ("amount", "contract_sum_before", "contract_sum_after")
     )
-    if amount.value is not None or before.value is None or after.value is None:
-        return []
-    fields["amount"] = Extracted[Any](
-        value=after.value - before.value,
-        confidence=round(min(before.confidence, after.confidence) * DERIVED_CONFIDENCE_FACTOR, 2),
-        evidence="contract_sum_after - contract_sum_before",
-        method=Method.DERIVED,
-    )
-    return [
-        Issue(
-            code="derived_field",
-            severity=Severity.WARNING,
-            message="amount was not found directly; derived from the contract sums",
-            field="amount",
+    issues: list[Issue] = []
+    if amount.value is None and before.value is not None and after.value is not None:
+        fields["amount"] = Extracted[Any](
+            value=after.value - before.value,
+            confidence=round(
+                min(before.confidence, after.confidence) * DERIVED_CONFIDENCE_FACTOR, 2
+            ),
+            evidence="contract_sum_after - contract_sum_before",
+            method=Method.DERIVED,
         )
-    ]
+        issues.append(
+            Issue(
+                code="derived_field",
+                severity=Severity.WARNING,
+                message="amount was not found directly; derived from the contract sums",
+                field="amount",
+            )
+        )
+    if after.value is None and before.value is not None and amount.value is not None:
+        fields["contract_sum_after"] = Extracted[Any](
+            value=before.value + amount.value,
+            confidence=round(
+                min(before.confidence, amount.confidence) * DERIVED_CONFIDENCE_FACTOR, 2
+            ),
+            evidence="contract_sum_before + amount",
+            method=Method.DERIVED,
+        )
+        issues.append(
+            Issue(
+                code="derived_field",
+                severity=Severity.WARNING,
+                message="contract_sum_after was not found directly; derived from before + amount",
+                field="contract_sum_after",
+            )
+        )
+    return issues
 
 
 def check_fields(fields: Fields, *, today: date) -> list[Issue]:
@@ -126,4 +146,5 @@ def overall_confidence(fields: Fields) -> float:
 
 def needs_review(fields: Fields, issues: list[Issue], min_confidence: float) -> bool:
     has_error = any(issue.severity is Severity.ERROR for issue in issues)
-    return has_error or overall_confidence(fields) < min_confidence
+    has_ocr_text = any(issue.code == "ocr_text" for issue in issues)
+    return has_error or has_ocr_text or overall_confidence(fields) < min_confidence
