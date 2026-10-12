@@ -9,6 +9,7 @@ from co_extract.schema import Extracted, Issue, Method, Severity
 from co_extract.validation import (
     check_fields,
     derive_amount,
+    derive_contract_sum_after,
     needs_review,
     overall_confidence,
 )
@@ -58,6 +59,27 @@ def test_amount_is_not_derived_when_present_or_when_inputs_are_missing() -> None
     assert derive_amount(present) == []
     assert present["amount"].value == Decimal("1")
     assert derive_amount(make_fields(contract_sum_before=Decimal("1"))) == []
+
+
+def test_contract_sum_after_is_derived_from_amount_and_contract_sum_before() -> None:
+    fields = make_fields(contract_sum_before=Decimal("1000.00"), amount=Decimal("250.50"))
+    issues = derive_contract_sum_after(fields)
+    assert fields["contract_sum_after"].value == Decimal("1250.50")
+    assert fields["contract_sum_after"].method is Method.DERIVED
+    assert fields["contract_sum_after"].confidence == 0.72  # 0.9 * 0.8
+    assert codes(issues) == ["derived_field"]
+
+
+def test_contract_sum_after_is_not_derived_when_present_or_inputs_missing() -> None:
+    present = make_fields(
+        contract_sum_before=Decimal("1000.00"),
+        amount=Decimal("250.50"),
+        contract_sum_after=Decimal("1300.00"),
+    )
+    assert derive_contract_sum_after(present) == []
+    assert present["contract_sum_after"].value == Decimal("1300.00")
+    assert derive_contract_sum_after(make_fields(contract_sum_before=Decimal("1000.00"))) == []
+    assert derive_contract_sum_after(make_fields(amount=Decimal("100.00"))) == []
 
 
 # ------------------------------------------------------------------ check_fields
@@ -134,3 +156,9 @@ def test_needs_review_rules() -> None:
     warning = Issue(code="x", severity=Severity.WARNING, message="m")
     assert needs_review(fields, [error], min_confidence=0.7) is True
     assert needs_review(fields, [warning], min_confidence=0.7) is False
+
+
+def test_ocr_text_issue_always_requires_review() -> None:
+    fields = complete_fields(confidence=0.95)
+    ocr_warning = Issue(code="ocr_text", severity=Severity.WARNING, message="ocr")
+    assert needs_review(fields, [ocr_warning], min_confidence=0.7) is True

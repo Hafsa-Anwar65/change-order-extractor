@@ -26,6 +26,7 @@ from co_extract.validation import (
     DEFAULT_MIN_CONFIDENCE,
     check_fields,
     derive_amount,
+    derive_contract_sum_after,
     needs_review,
     overall_confidence,
 )
@@ -155,6 +156,7 @@ class ChangeOrderPipeline:
             issues.extend(field_issues)
 
         issues.extend(derive_amount(fields))
+        issues.extend(derive_contract_sum_after(fields))
         issues.extend(check_fields(fields, today=today or date.today()))
 
         return ExtractionResult(

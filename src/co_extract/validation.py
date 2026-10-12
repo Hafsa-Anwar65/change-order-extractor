@@ -46,6 +46,32 @@ def derive_amount(fields: Fields) -> list[Issue]:
     ]
 
 
+def derive_contract_sum_after(fields: Fields) -> list[Issue]:
+    """If contract_sum_after is missing but amount and contract_sum_before are known, derive it."""
+    before, amount, after = (
+        fields[n] for n in ("contract_sum_before", "amount", "contract_sum_after")
+    )
+    if after.value is not None or before.value is None or amount.value is None:
+        return []
+    fields["contract_sum_after"] = Extracted[Any](
+        value=before.value + amount.value,
+        confidence=round(min(before.confidence, amount.confidence) * DERIVED_CONFIDENCE_FACTOR, 2),
+        evidence="contract_sum_before + amount",
+        method=Method.DERIVED,
+    )
+    return [
+        Issue(
+            code="derived_field",
+            severity=Severity.WARNING,
+            message=(
+                "contract_sum_after was not found directly; "
+                "derived from contract_sum_before + amount"
+            ),
+            field="contract_sum_after",
+        )
+    ]
+
+
 def check_fields(fields: Fields, *, today: date) -> list[Issue]:
     return [
         *_missing_required(fields),
@@ -126,4 +152,5 @@ def overall_confidence(fields: Fields) -> float:
 
 def needs_review(fields: Fields, issues: list[Issue], min_confidence: float) -> bool:
     has_error = any(issue.severity is Severity.ERROR for issue in issues)
-    return has_error or overall_confidence(fields) < min_confidence
+    has_ocr_text = any(issue.code == "ocr_text" for issue in issues)
+    return has_error or has_ocr_text or overall_confidence(fields) < min_confidence
