@@ -15,7 +15,7 @@ confidence and its evidence, and the document as a whole gets a `needs_review` v
    optional extra). The OCR boxes are rebuilt into reading-order text (rows, wide gaps for columns,
    blank lines for paragraphs). Without OCR installed, a clear `NoTextLayerError` says what to
    install instead of returning empty fields. OCR quality scales every candidate's confidence, and
-   any document read below 0.95 mean engine confidence is routed to review, because OCR garbles free
+   any document read by OCR is routed to review, because OCR garbles free
    text in ways no value check can see (a real scan here produced "SchoolDistrict").
    `--split` cuts a packet into one text per change order at each new change-order number.
 2. **Extract candidates with two extractors that fail differently.**
@@ -66,7 +66,7 @@ Two sets, both synthetic, both scored rules-only (`python -m co_extract.evaluati
 | | Hand-written samples | Generated corpus |
 |---|---|---|
 | Documents | 11 (layouts, a packet, a real PDF, a scanned PDF and PNG through OCR) | 1000, seed 7 |
-| Fields correct | 109 / 110 (99.1%) | 9915 / 10000 (99.2%) |
+| Fields correct | 109 / 110 (99.1%) | 9954 / 10000 (99.5%) |
 | Wrong values | 0 | 2 |
 | `needs_review` matches expectation | 11 / 11 | 977 / 1000 |
 | Wrong values in documents *not* flagged | 0 | 0 |
@@ -79,8 +79,10 @@ mistaken for meaning.
 What the numbers did and did not show. Building the corpus exposed three label gaps (fixed) and one
 real design flaw: a money figure damaged by OCR was dropped and then silently re-derived from the
 other two, so the document looked fine. An unreadable money figure is now an error and routes the
-document to review (routing went from 865 to 977 of 1000). Of the 114 flagged documents, the
-2 wrong values and 83 missing values all sit in flagged ones.
+document to review (routing went from 865 to 977 of 1000). When `contract_sum_after` is the
+missing figure it is now also derived from `before + amount` (marked as derived, lower confidence),
+which cut missing values from 83 to 44. All 2 wrong and 44 missing values sit in the 114 flagged
+documents.
 
 Caveats, stated plainly:
 
@@ -101,7 +103,7 @@ Caveats, stated plainly:
 
 | # | Failure | What the pipeline does | Status |
 |---|---|---|---|
-| 1 | Scanned PDF or image | RapidOCR reads it; confidence scaled by OCR quality; below 0.95 the document is flagged | Built; tested on clean synthetic scans only |
+| 1 | Scanned PDF or image | RapidOCR reads it; confidence scaled by OCR quality; any OCR document is flagged | Built; tested on clean synthetic scans only |
 | 2 | OCR-damaged label (`0RDER`) | Rules miss it; missing required field, so review. LLM can recover it (tested with a fake model) | Mitigated |
 | 3 | OCR-damaged digits (`$l2,450.00`) | Rejected as unparseable (an error on money fields, so review); amount derived from the contract sums at ×0.8 | Mitigated; a human confirms |
 | 4 | Ambiguous date `03/04/2026` | Read month-first, confidence ×0.6, below the bar, so review | Day-first is a parameter but not exposed per document or locale |

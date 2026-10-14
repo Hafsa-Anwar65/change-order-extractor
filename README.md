@@ -98,8 +98,7 @@ Fields: `change_order_number`, `date`, `project_name`, `owner`, `contractor`, `d
 `amount`, `contract_sum_before`, `contract_sum_after`, `schedule_impact_days`.
 
 `needs_review` is true when any issue has severity `error` (missing required field, contract sums
-that do not add up, a money figure that is printed but unreadable, text read by OCR below 0.95 engine
-confidence) or the weakest required field is below `--min-confidence`.
+that do not add up, a money figure that is printed but unreadable, any text read by OCR) or the weakest required field is below `--min-confidence`.
 
 ## Using it as a library
 
@@ -133,14 +132,14 @@ src/co_extract/
   evaluation.py    scoring, silent errors, calibration table
 samples/           hand-written change orders (text, PDF, scans, packet) + expected/*.json
 scripts/           regenerate the sample PDF and the scanned samples
-tests/             194 tests
+tests/             195 tests
 .github/workflows/ci.yml   ruff, mypy, pytest, evaluation on 3.12 and 3.13
 ```
 
 ## Tests and evaluation
 
 ```bash
-pytest                                       # 194 tests, no network or API key needed
+pytest                                       # 195 tests, no network or API key needed
 ruff check . && ruff format --check . && mypy
 python -m co_extract.evaluation --corpus 1000   # samples + 1000 generated documents
 ```
@@ -157,7 +156,7 @@ Synthetic corpus (1000 generated documents, seed 7, four layouts, mixed date and
 15% with an OCR-style character swap in a money figure):
 
 ```
-field accuracy : 9915/10000 (99.2%)  wrong values: 2   missing: 83
+field accuracy : 9954/10000 (99.5%)  wrong values: 2   missing: 44
 routing correct: 977/1000            flagged for review: 114
 silent errors  : 0
 ```
