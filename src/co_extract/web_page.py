@@ -14,132 +14,147 @@ PAGE = r"""<!doctype html>
 <title>Change Order Extractor</title>
 <style>
   :root {
-    --desk: #e6eaf0; --sheet: #fbfcfe; --ink: #13203a; --muted: #5b6678; --rule: #cdd5e0;
-    --field: #f1f4f8; --accent: #1d4ed8; --accent-ink: #ffffff;
-    --mark: #ffe681; --mark-ink: #3a2f00;
-    --ok: #1c7a4b; --review: #c4361f; --tick-off: #d5dbe5;
-    --shadow: 0 1px 0 rgba(19,32,58,.06), 0 12px 30px -18px rgba(19,32,58,.35);
-    --display: Bahnschrift, "DIN Alternate", "Segoe UI Variable Display", "Segoe UI", system-ui,
-      sans-serif;
+    color-scheme: dark;
+    --bg: #0d0f12; --panel: #15181d; --panel-2: #1b1f26; --line: #272c35; --text: #eceef1;
+    --muted: #9099a6; --gold: #f2b53b; --gold-ink: #1a1304; --steel: #6f7a8a;
+    --ok: #4ec58a; --watch: #f2b53b; --risk: #ff6b57; --mark: rgba(242,181,59,.2);
+    --display: Bahnschrift, "DIN Alternate", "Arial Narrow", "Segoe UI Variable Display",
+      system-ui, sans-serif;
     --body: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --desk: #0e131c; --sheet: #161d29; --ink: #e8edf6; --muted: #98a3b6; --rule: #2a3445;
-      --field: #1d2634; --accent: #7fa4ff; --accent-ink: #0b1220;
-      --mark: #5a4c0c; --mark-ink: #fff1b0;
-      --ok: #4cc38a; --review: #ff8068; --tick-off: #2d384a;
-      --shadow: 0 1px 0 rgba(0,0,0,.4), 0 14px 34px -18px rgba(0,0,0,.8);
-    }
-  }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--desk); color: var(--ink); font: 15px/1.55 var(--body); }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 72px; }
-  header { margin-bottom: 22px; }
-  h1 { margin: 0; font: 600 30px/1.1 var(--display); letter-spacing: .2px; }
-  header p { margin: 6px 0 0; color: var(--muted); max-width: 62ch; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--body); }
+  body::before { content: ""; position: fixed; inset: 0 0 auto 0; height: 520px; z-index: -1;
+    background: radial-gradient(900px 340px at 78% -80px, rgba(242,181,59,.13), transparent 70%); }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px 80px; }
 
-  .layout { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 22px;
-            align-items: start; }
-  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+  .topbar { display: flex; align-items: center; gap: 12px; padding: 18px 0; }
+  .mark { width: 30px; height: 30px; border-radius: 7px; background: var(--gold);
+          display: grid; place-items: center; color: var(--gold-ink); }
+  .brand { font: 700 17px var(--display); letter-spacing: .6px; text-transform: uppercase; }
+  .tape { height: 8px; border-radius: 2px; opacity: .9;
+    background: repeating-linear-gradient(-45deg, var(--gold) 0 12px, #111418 12px 24px); }
 
-  .sheet { background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px;
-           box-shadow: var(--shadow); }
-  .intake { padding: 18px; position: sticky; top: 18px; }
-  @media (max-width: 900px) { .intake { position: static; } }
-  h2 { margin: 0 0 10px; font: 600 17px/1.2 var(--display); }
+  .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px;
+          align-items: center; padding: 48px 0 40px; }
+  @media (max-width: 880px) { .hero { grid-template-columns: 1fr; gap: 28px; padding-top: 32px; } }
+  h1 { margin: 0; font: 700 clamp(34px, 5.4vw, 58px)/1.02 var(--display); letter-spacing: .5px;
+       text-transform: uppercase; }
+  h1 em { font-style: normal; color: var(--gold); display: block; }
+  .lede { margin: 18px 0 0; color: var(--muted); font-size: 17px; max-width: 46ch; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .facts span { padding: 5px 11px; border: 1px solid var(--line); border-radius: 99px;
+                color: var(--muted); font-size: 13px; background: var(--panel); }
 
-  .drop { display: block; border: 1.5px dashed var(--rule); border-radius: 6px; padding: 18px 12px;
-          text-align: center; color: var(--muted); cursor: pointer; background: var(--field);
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+  .intake { padding: 20px; box-shadow: 0 24px 60px -30px rgba(0,0,0,.8); }
+  h2 { margin: 0 0 12px; font: 700 15px var(--display); letter-spacing: .8px;
+       text-transform: uppercase; color: var(--text); }
+  .drop { display: block; border: 1.5px dashed #3a414d; border-radius: 10px; padding: 20px 12px;
+          text-align: center; color: var(--muted); cursor: pointer; background: var(--panel-2);
           transition: border-color .15s, background .15s; }
-  .drop:hover, .drop:focus-within, .drop.over { border-color: var(--accent); color: var(--ink); }
-  .drop strong { color: var(--ink); }
+  .drop:hover, .drop:focus-within, .drop.over { border-color: var(--gold); color: var(--text); }
+  .drop strong { color: var(--gold); }
   .drop input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  #picked { margin-top: 6px; font-weight: 600; color: var(--ink); word-break: break-all; }
+  #picked { margin-top: 6px; font-weight: 600; color: var(--text); word-break: break-all; }
   .or { margin: 14px 0 6px; color: var(--muted); font-size: 13px; }
-  textarea { width: 100%; min-height: 170px; resize: vertical; padding: 10px; color: var(--ink);
-             background: var(--field); border: 1px solid var(--rule); border-radius: 6px;
+  textarea { width: 100%; min-height: 130px; resize: vertical; padding: 11px; color: var(--text);
+             background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px;
              font: 13px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; }
   textarea:focus-visible, button:focus-visible, .drop:focus-within {
-    outline: 2px solid var(--accent); outline-offset: 2px; }
-  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
-  button { font: 600 14px var(--body); padding: 9px 16px; border-radius: 6px; cursor: pointer;
-           border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); }
-  button:hover { border-color: var(--muted); }
-  button.primary { background: var(--accent); border-color: var(--accent);
-                   color: var(--accent-ink); }
-  button.link { border: 0; background: none; padding: 9px 4px; color: var(--accent);
+    outline: 2px solid var(--gold); outline-offset: 2px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+  button { font: 600 14px var(--body); padding: 10px 18px; border-radius: 8px; cursor: pointer;
+           border: 1px solid #343b46; background: var(--panel-2); color: var(--text); }
+  button:hover { border-color: var(--steel); }
+  button.primary { background: var(--gold); border-color: var(--gold); color: var(--gold-ink);
+                   font-weight: 700; }
+  button.primary:hover { filter: brightness(1.08); }
+  button.link { border: 0; background: none; padding: 10px 4px; color: var(--gold);
                 font-weight: 500; }
   button:disabled { opacity: .55; cursor: progress; }
   #status { margin-top: 10px; font-size: 13px; color: var(--muted); min-height: 1.2em; }
-  #status .err { color: var(--review); font-weight: 600; }
+  #status .err { color: var(--risk); font-weight: 600; }
 
-  .empty { padding: 56px 24px; text-align: center; color: var(--muted); }
-  .empty b { display: block; color: var(--ink); font: 600 18px var(--display); margin-bottom: 4px; }
-
-  .verdict { display: flex; gap: 18px; align-items: center; padding: 18px 20px; flex-wrap: wrap; }
-  .stamp { font: 700 20px/1 var(--display); letter-spacing: 1.5px; text-transform: uppercase;
-           padding: 9px 14px 8px; border: 3px solid currentColor; border-radius: 6px;
-           transform: rotate(-3deg); opacity: .94; }
-  .stamp.ok { color: var(--ok); } .stamp.review { color: var(--review); }
+  .results { display: grid; gap: 16px; scroll-margin-top: 20px; }
+  .verdict { display: flex; gap: 22px; align-items: center; padding: 20px 22px; flex-wrap: wrap; }
+  .stamp { font: 700 22px/1 var(--display); letter-spacing: 2px; text-transform: uppercase;
+           padding: 10px 15px 9px; border: 3px solid currentColor; border-radius: 6px;
+           transform: rotate(-3deg); }
+  .stamp.ok { color: var(--ok); } .stamp.review { color: var(--risk); }
   .stamp.land { animation: land .32s cubic-bezier(.2,1.4,.4,1) both; }
   @keyframes land { from { transform: rotate(-9deg) scale(1.5); opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .stamp.land { animation: none; } }
   .verdict .meta { display: grid; gap: 2px; }
-  .verdict .meta b { font: 600 16px var(--display); }
+  .verdict .meta b { font: 700 18px var(--display); letter-spacing: .4px; }
   .verdict .meta span { color: var(--muted); font-size: 13px; word-break: break-all; }
-  .why { margin-left: auto; color: var(--muted); font-size: 13px; max-width: 34ch; }
+  .why { margin-left: auto; color: var(--muted); font-size: 14px; max-width: 36ch; }
   @media (max-width: 640px) { .why { margin-left: 0; max-width: none; } }
 
-  .results { display: grid; gap: 16px; }
-  .ledger { padding: 4px 18px 8px; }
-  .row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 128px; gap: 6px 16px;
-         padding: 13px 0; border-bottom: 1px solid var(--rule); align-items: start; }
+  .ledger { padding: 6px 22px 10px; }
+  .row { display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px; gap: 6px 18px;
+         padding: 15px 0; border-bottom: 1px solid var(--line); align-items: start; }
   .row:last-child { border-bottom: 0; }
-  .name { color: var(--muted); font-weight: 600; font-size: 13.5px; padding-top: 2px; }
-  .value { font: 600 16px/1.35 var(--display); word-break: break-word;
+  .name { color: var(--muted); font-weight: 600; font-size: 13.5px; padding-top: 3px; }
+  .value { font: 600 17px/1.35 var(--display); letter-spacing: .2px; word-break: break-word;
            font-variant-numeric: tabular-nums; }
-  .value.none { color: var(--muted); font: italic 400 14px var(--body); padding-top: 1px; }
-  .quote { margin-top: 5px; font-size: 12.5px; color: var(--muted); word-break: break-word; }
-  mark { background: var(--mark); color: var(--mark-ink); padding: 1px 4px; border-radius: 3px;
+  .value.none { color: var(--muted); font: italic 400 14px var(--body); }
+  .quote { margin-top: 6px; font-size: 12.5px; color: var(--muted); word-break: break-word; }
+  mark { background: var(--mark); color: #f6d58c; padding: 1px 5px; border-radius: 3px;
          box-decoration-break: clone; -webkit-box-decoration-break: clone; }
-  .conf { text-align: right; padding-top: 3px; }
-  .ticks { display: inline-flex; gap: 2px; vertical-align: middle; }
-  .ticks i { width: 5px; height: 13px; border-radius: 1px; background: var(--tick-off); }
-  .ticks i.on { background: var(--tone); }
-  .conf small { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; }
+  .conf { justify-self: end; text-align: right; display: grid; gap: 4px; justify-items: end; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
+          border-radius: 99px; font-size: 12.5px; font-weight: 600; color: var(--tone);
+          border: 1px solid color-mix(in srgb, var(--tone) 45%, transparent);
+          background: color-mix(in srgb, var(--tone) 12%, transparent); }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%;
+                  background: var(--tone); }
+  .conf small { color: var(--muted); font-size: 12px; }
   @media (max-width: 640px) {
     .row { grid-template-columns: 1fr auto; }
     .name { grid-column: 1 / -1; padding: 0; }
-    .conf { text-align: right; }
   }
 
-  .issues { padding: 16px 18px; }
-  .issues ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
-  .issues li { padding-left: 12px; border-left: 3px solid var(--tone); }
-  .issues code { font: 600 13px var(--body); color: var(--tone); }
-  .sev-error { --tone: var(--review); } .sev-warning { --tone: #b07a00; }
-  @media (prefers-color-scheme: dark) { .sev-warning { --tone: #f0b44a; } }
+  .issues { padding: 18px 22px; }
+  .issues ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .issues li { padding-left: 13px; border-left: 3px solid var(--tone); }
+  .issues code { font: 700 13px var(--body); color: var(--tone); }
+  .sev-error { --tone: var(--risk); } .sev-warning { --tone: var(--watch); }
 
-  details.raw { padding: 4px 18px 14px; }
-  summary { cursor: pointer; font: 600 15px var(--display); padding: 10px 0; }
+  details.raw { padding: 4px 22px 16px; }
+  summary { cursor: pointer; font: 700 15px var(--display); letter-spacing: .8px;
+            text-transform: uppercase; padding: 12px 0; }
   .rawbar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
-  pre { margin: 0; overflow: auto; max-height: 340px; padding: 12px; background: var(--field);
-        border-radius: 6px; font: 12.5px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; }
+  pre { margin: 0; overflow: auto; max-height: 340px; padding: 13px; background: var(--panel-2);
+        border-radius: 8px; font: 12.5px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; }
+  footer { margin-top: 40px; color: var(--muted); font-size: 13px; }
   [hidden] { display: none !important; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Change Order Extractor</h1>
-    <p>Drop in a change order and get its fields back with the evidence they were read from,
-      a confidence for each, and a clear call on whether a person should check it.</p>
-  </header>
+  <div class="topbar">
+    <div class="mark" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 4l6 6-3 3-6-6z"/><path d="M11 7L4 14l2 2 7-7"/><path d="M5 20l5-5"/></svg>
+    </div>
+    <div class="brand">Change Order Extractor</div>
+  </div>
+  <div class="tape" aria-hidden="true"></div>
 
-  <div class="layout">
-    <section class="sheet intake" aria-label="Input">
-      <h2>Change order</h2>
+  <section class="hero">
+    <div>
+      <h1>Read the change order.<em>Trust what checks out.</em></h1>
+      <p class="lede">Drop in a PDF, scan or pasted text. Every field comes back with the line it
+        was read from and a status, and the contract sums are checked so a person only looks
+        where it matters.</p>
+      <div class="facts"><span>PDF, scans and text</span><span>Evidence for every value</span>
+        <span>Sums checked to the cent</span></div>
+    </div>
+
+    <section class="card intake" aria-label="Input">
+      <h2>Upload a change order</h2>
       <label class="drop" id="drop">
         <input id="file" type="file" accept=".pdf,.txt,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.webp">
         <strong>Choose a file</strong> or drop it here
@@ -156,32 +171,27 @@ PAGE = r"""<!doctype html>
       </div>
       <div id="status" role="status"></div>
     </section>
+  </section>
 
-    <div>
-      <section class="sheet empty" id="empty">
-        <b>Nothing extracted yet</b>
-        Add a file or paste text, then choose Extract.
-      </section>
-
-      <div class="results" id="result" hidden>
-        <section class="sheet verdict">
-          <div class="stamp" id="badge"></div>
-          <div class="meta"><b id="overall"></b><span id="src"></span></div>
-          <div class="why" id="why"></div>
-        </section>
-        <section class="sheet ledger" id="fields" aria-label="Extracted fields"></section>
-        <section class="sheet issues" id="issuesCard" hidden>
-          <h2>Things to check</h2>
-          <ul id="issues"></ul>
-        </section>
-        <details class="sheet raw">
-          <summary>Raw JSON</summary>
-          <div class="rawbar"><button id="copy" type="button">Copy JSON</button></div>
-          <pre id="json"></pre>
-        </details>
-      </div>
-    </div>
+  <div class="results" id="result" hidden>
+    <section class="card verdict">
+      <div class="stamp" id="badge"></div>
+      <div class="meta"><b id="overall"></b><span id="src"></span></div>
+      <div class="why" id="why"></div>
+    </section>
+    <section class="card ledger" id="fields" aria-label="Extracted fields"></section>
+    <section class="card issues" id="issuesCard" hidden>
+      <h2>Things to check</h2>
+      <ul id="issues"></ul>
+    </section>
+    <details class="card raw">
+      <summary>Raw JSON</summary>
+      <div class="rawbar"><button id="copy" type="button">Copy JSON</button></div>
+      <pre id="json"></pre>
+    </details>
   </div>
+  <footer>Confidence is a routing signal, not a probability. Always check flagged documents
+    against the original.</footer>
 </div>
 <script>
 const $ = (id) => document.getElementById(id);
@@ -208,7 +218,7 @@ $("sample").addEventListener("click", () => { setFile(null); $("file").value = "
   $("text").value = SAMPLE; });
 $("clear").addEventListener("click", () => {
   setFile(null); $("file").value = ""; $("text").value = ""; $("status").textContent = "";
-  $("result").hidden = true; $("empty").hidden = false;
+  $("result").hidden = true;
 });
 $("copy").addEventListener("click", () => navigator.clipboard.writeText($("json").textContent));
 
@@ -218,14 +228,15 @@ function el(tag, text, cls) {
   if (cls) n.className = cls;
   return n;
 }
-const tone = (c) => c >= 0.85 ? "var(--ok)" : c >= 0.7 ? "#b07a00" : "var(--review)";
+const tone = (c) => c >= 0.85 ? "var(--ok)" : c >= 0.7 ? "var(--watch)" : "var(--risk)";
+const status = (c) => c >= 0.85 ? "On track" : c >= 0.7 ? "Watch" : "At risk";
 const label = (name) => {
   const s = name.replaceAll("_", " ").replace(/^ocr/, "OCR");
   return s[0].toUpperCase() + s.slice(1);
 };
 
 function render(data) {
-  $("empty").hidden = true; $("result").hidden = false;
+  $("result").hidden = false;
   const stamp = $("badge");
   stamp.textContent = data.needs_review ? "Needs review" : "Looks good";
   stamp.className = "stamp " + (data.needs_review ? "review" : "ok");
@@ -251,11 +262,9 @@ function render(data) {
     row.append(mid);
     const conf = el("div", undefined, "conf");
     if (!none) {
-      const ticks = el("span", undefined, "ticks");
-      ticks.style.setProperty("--tone", tone(f.confidence));
-      const on = Math.round(f.confidence * 10);
-      for (let i = 0; i < 10; i++) ticks.append(el("i", undefined, i < on ? "on" : ""));
-      conf.append(ticks, el("small", f.confidence.toFixed(2) + " • " + f.method));
+      const chip = el("span", status(f.confidence), "chip");
+      chip.style.setProperty("--tone", tone(f.confidence));
+      conf.append(chip, el("small", f.confidence.toFixed(2) + " \u2022 " + f.method));
     }
     row.append(conf); box.append(row);
   }
@@ -269,6 +278,7 @@ function render(data) {
   }
   $("issuesCard").hidden = data.issues.length === 0;
   $("json").textContent = JSON.stringify(data, null, 2);
+  $("result").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 $("go").addEventListener("click", async () => {
