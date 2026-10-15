@@ -23,7 +23,7 @@ def _parser() -> argparse.ArgumentParser:
         description="Extract structured, validated fields from change-order PDFs or text files.",
     )
     parser.add_argument(
-        "paths", nargs="*", type=Path, help="change-order files (pdf, txt, images) or folders"
+        "paths", nargs="*", type=Path, help="change-order files (pdf, txt) or folders"
     )
     parser.add_argument("--llm", action="store_true", help="also use the LLM extractor")
     parser.add_argument(

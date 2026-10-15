@@ -84,7 +84,7 @@ def evaluate(pipeline: ChangeOrderPipeline, samples_dir: Path) -> list[Score]:
         expected = json.loads(path.read_text(encoding="utf-8"))
         try:
             result = pipeline.run_file(samples_dir / expected["source"])
-        except ChangeOrderError as exc:  # e.g. a scan while the OCR extra is not installed
+        except ChangeOrderError as exc:  # e.g. an unreadable file
             print(f"skipped {expected['source']}: {exc}")
             continue
         scores.append(score(result, expected))

@@ -6,7 +6,6 @@ from typing import Any
 
 import pytest
 
-from co_extract import ocr
 from co_extract.errors import ExtractorError
 from co_extract.evaluation import score
 from co_extract.extractors import Candidate, RulesExtractor
@@ -25,10 +24,6 @@ def test_schema_and_field_specs_stay_in_sync() -> None:
 @pytest.mark.parametrize("path", EXPECTED_FILES, ids=lambda p: p.stem)
 def test_rules_only_matches_ground_truth(path: Any, rules_pipeline: ChangeOrderPipeline) -> None:
     expected = json.loads(path.read_text(encoding="utf-8"))
-    if expected["source"].endswith((".png", ".jpg")) or "scanned" in expected["source"]:
-        pytest.importorskip("pypdfium2")
-        if ocr.default_engine() is None:  # not installed, or its native libraries cannot load
-            pytest.skip("OCR engine unavailable")
     result = rules_pipeline.run_file(SAMPLES / expected["source"])
     outcome = score(result, expected)
 

@@ -146,5 +146,4 @@ def overall_confidence(fields: Fields) -> float:
 
 def needs_review(fields: Fields, issues: list[Issue], min_confidence: float) -> bool:
     has_error = any(issue.severity is Severity.ERROR for issue in issues)
-    has_ocr_text = any(issue.code == "ocr_text" for issue in issues)
-    return has_error or has_ocr_text or overall_confidence(fields) < min_confidence
+    return has_error or overall_confidence(fields) < min_confidence

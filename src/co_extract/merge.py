@@ -60,7 +60,7 @@ def _noisy_or(*confidences: float) -> float:
     return 1.0 - prod(1.0 - c for c in confidences)
 
 
-# A figure that is printed but cannot be read (typically OCR damage such as "$l2,450.00") is an
+# A figure that is printed but cannot be read (typically noisy text such as "$l2,450.00") is an
 # error on the money fields: the document holds a number we do not have, even when the sum
 # check or a derivation hides the gap. Elsewhere ("Schedule Impact: TBD") it is only a warning.
 _UNREADABLE_IS_ERROR = frozenset({"amount", "contract_sum_before", "contract_sum_after"})

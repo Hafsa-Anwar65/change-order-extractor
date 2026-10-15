@@ -141,7 +141,5 @@ def test_needs_review_rules() -> None:
     assert needs_review(fields, [], min_confidence=0.9) is True  # below the bar
     error = Issue(code="x", severity=Severity.ERROR, message="m")
     warning = Issue(code="x", severity=Severity.WARNING, message="m")
-    ocr = Issue(code="ocr_text", severity=Severity.WARNING, message="m")
     assert needs_review(fields, [error], min_confidence=0.7) is True
     assert needs_review(fields, [warning], min_confidence=0.7) is False
-    assert needs_review(fields, [ocr], min_confidence=0.7) is True

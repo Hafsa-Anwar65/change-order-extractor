@@ -82,7 +82,7 @@ def test_folder_input_and_csv_summary(tmp_path: Path) -> None:
 
     folder = tmp_path / "in"
     folder.mkdir()
-    for sample in SAMPLES.glob("*.txt"):  # text only: scans need the optional OCR extra
+    for sample in SAMPLES.glob("*.txt"):
         shutil.copy(sample, folder)
     summary = tmp_path / "summary.csv"
     args = [str(folder), "--split", "--summary", str(summary), "--out-dir", str(tmp_path / "o")]

@@ -7,7 +7,7 @@ stands alone. Sentence-style forms ("The Contract Sum will be increased by this 
 in the amount of $...") are handled by per-field fallback patterns.
 
 Limitations are deliberate and documented in WRITEUP.md: labels it has never seen and
-OCR-damaged labels are missed. The LLM extractor exists to cover those.
+Damaged labels (e.g. "0RDER") are missed. The LLM extractor exists to cover those.
 """
 
 from __future__ import annotations

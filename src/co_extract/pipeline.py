@@ -32,10 +32,6 @@ from co_extract.validation import (
 
 logger = logging.getLogger(__name__)
 
-# Below this mean OCR confidence the text is too unreliable to pass without a human look
-# (OCR garbles free text in ways no value check can see, e.g. "SchoolDistrict").
-OCR_REVIEW_QUALITY = 0.95
-
 
 class ChangeOrderPipeline:
     def __init__(
@@ -69,12 +65,7 @@ class ChangeOrderPipeline:
         ]
 
     def _run_document(self, document: Document) -> ExtractionResult:
-        return self.run_text(
-            document.text,
-            source=document.source,
-            text_quality=document.quality,
-            from_ocr=document.ocr,
-        )
+        return self.run_text(document.text, source=document.source)
 
     def run_text(
         self,
@@ -82,18 +73,9 @@ class ChangeOrderPipeline:
         *,
         source: str = "<text>",
         today: date | None = None,
-        text_quality: float = 1.0,
-        from_ocr: bool = False,
     ) -> ExtractionResult:
         def run(extractors: Sequence[Extractor]) -> ExtractionResult:
-            return self._run(
-                text,
-                extractors,
-                source=source,
-                today=today,
-                text_quality=text_quality,
-                from_ocr=from_ocr,
-            )
+            return self._run(text, extractors, source=source, today=today)
 
         result = run(self._extractors)
         if self._fallback and result.needs_review:
@@ -108,24 +90,9 @@ class ChangeOrderPipeline:
         *,
         source: str,
         today: date | None,
-        text_quality: float,
-        from_ocr: bool,
     ) -> ExtractionResult:
         text = normalize_text(text)
         issues: list[Issue] = []
-        if from_ocr:
-            issues.append(
-                Issue(
-                    code="ocr_text",
-                    severity=(
-                        Severity.ERROR if text_quality < OCR_REVIEW_QUALITY else Severity.WARNING
-                    ),
-                    message=(
-                        f"text was read by OCR (mean confidence {text_quality:.2f}); "
-                        "check values against the original"
-                    ),
-                )
-            )
 
         pooled: dict[str, list[Candidate]] = {spec.name: [] for spec in FIELDS}
         used: list[str] = []
@@ -144,10 +111,7 @@ class ChangeOrderPipeline:
                 continue
             used.append(extractor.name)
             for name, candidates in found.items():
-                # Unreliable OCR lowers trust in everything read from the text.
-                pooled[name].extend(
-                    replace(c, confidence=c.confidence * text_quality) for c in candidates
-                )
+                pooled[name].extend(candidates)
 
         fields: dict[str, Extracted[Any]] = {}
         for spec in FIELDS:

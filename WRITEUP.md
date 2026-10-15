@@ -11,12 +11,9 @@ confidence and its evidence, and the document as a whole gets a `needs_review` v
 ## Approach
 
 1. **Load.** `pypdf` for PDFs, UTF-8 for text. Text is NFKC-normalised (ligatures, non-breaking
-   spaces, full-width digits). Pages with no text layer, and image files, go through OCR (RapidOCR,
-   optional extra). The OCR boxes are rebuilt into reading-order text (rows, wide gaps for columns,
-   blank lines for paragraphs). Without OCR installed, a clear `NoTextLayerError` says what to
-   install instead of returning empty fields. OCR quality scales every candidate's confidence, and
-   any document read by OCR is routed to review, because OCR garbles free
-   text in ways no value check can see (a real scan here produced "SchoolDistrict").
+   spaces, full-width digits). A PDF with no text layer (a scan) raises a clear
+   `NoTextLayerError` instead of returning empty fields: scanned and handwritten documents are out
+   of scope.
    `--split` cuts a packet into one text per change order at each new change-order number.
 2. **Extract candidates with two extractors that fail differently.**
    - *Rules:* a label lexer. Every line is checked for a known label (longest match wins, so
@@ -65,19 +62,19 @@ Two sets, both synthetic, both scored rules-only (`python -m co_extract.evaluati
 
 | | Hand-written samples | Generated corpus |
 |---|---|---|
-| Documents | 11 (layouts, a packet, a real PDF, a scanned PDF and PNG through OCR) | 1000, seed 7 |
-| Fields correct | 109 / 110 (99.1%) | 9954 / 10000 (99.5%) |
+| Documents | 9 (layouts, a packet, a real PDF) | 1000, seed 7 |
+| Fields correct | 89 / 90 (98.9%) | 9954 / 10000 (99.5%) |
 | Wrong values | 0 | 2 |
-| `needs_review` matches expectation | 11 / 11 | 977 / 1000 |
+| `needs_review` matches expectation | 9 / 9 | 977 / 1000 |
 | Wrong values in documents *not* flagged | 0 | 0 |
 
 The generator varies layout (labelled, alternative wording, header table, label column), date format,
-money format (`$`, parentheses for credits) and injects an OCR-style character swap into a money
+money format (`$`, parentheses for credits) and injects a character swap (`$l2,450.00`) into a money
 figure in 15% of documents. Scoring ignores spacing and case in free-text fields so layout is not
 mistaken for meaning.
 
 What the numbers did and did not show. Building the corpus exposed three label gaps (fixed) and one
-real design flaw: a money figure damaged by OCR was dropped and then silently re-derived from the
+real design flaw: a money figure with a damaged character was dropped and then silently re-derived from the
 other two, so the document looked fine. An unreadable money figure is now an error and routes the
 document to review (routing went from 865 to 977 of 1000). When `contract_sum_after` is the
 missing figure it is now also derived from `before + amount` (marked as derived, lower confidence),
@@ -91,8 +88,7 @@ Caveats, stated plainly:
   labelled corpus.
 - Confidences take few distinct values (0.92, 0.84, 0.72 ...), so the calibration table is "all
   returned values were right" in every bin. It cannot yet say that 0.8 means 80%.
-- OCR was tested on clean, synthetic renderings. Real scans (skew, stamps, handwriting, low
-  resolution) will be much worse; the review rule is deliberately conservative for that reason.
+- Scanned and handwritten documents are not supported. Only text and PDFs with a text layer are read.
 - The LLM path is tested against a fake client and a local stub of the Messages API (request shape,
   forced tool call, token counting, errors, grounding caps). I have **not** benchmarked it against
   the live model.
@@ -103,9 +99,9 @@ Caveats, stated plainly:
 
 | # | Failure | What the pipeline does | Status |
 |---|---|---|---|
-| 1 | Scanned PDF or image | RapidOCR reads it; confidence scaled by OCR quality; any OCR document is flagged | Built; tested on clean synthetic scans only |
-| 2 | OCR-damaged label (`0RDER`) | Rules miss it; missing required field, so review. LLM can recover it (tested with a fake model) | Mitigated |
-| 3 | OCR-damaged digits (`$l2,450.00`) | Rejected as unparseable (an error on money fields, so review); amount derived from the contract sums at ×0.8 | Mitigated; a human confirms |
+| 1 | Scanned PDF or image | `NoTextLayerError` with a clear message; no guessing | Out of scope (OCR is a natural next step) |
+| 2 | Damaged label (`0RDER`) | Rules miss it; missing required field, so review. LLM can recover it (tested with a fake model) | Mitigated |
+| 3 | Damaged digits (`$l2,450.00`) | Rejected as unparseable (an error on money fields, so review); amount derived from the contract sums at ×0.8 | Mitigated; a human confirms |
 | 4 | Ambiguous date `03/04/2026` | Read month-first, confidence ×0.6, below the bar, so review | Day-first is a parameter but not exposed per document or locale |
 | 5 | Label column followed by a separate value column, header-row tables | Paired by the layout pass (label run / value run, header row / data row) | Handled for the layouts I tried; unusual grids still fall to the LLM |
 | 6 | Label vocabulary the rules have not seen | Field missing, so review. A new label sharing a prefix with a known one can be mis-captured | Partly handled by an ignore-list, which is finite |
@@ -124,5 +120,5 @@ Caveats, stated plainly:
 1. Build a labelled corpus of real change orders and calibrate confidences against it (for example
    isotonic regression), then re-fit the review threshold to a target error rate.
 2. Benchmark the LLM path live, and measure how much `--llm-fallback` recovers per dollar.
-3. Test OCR on genuinely bad scans; add deskew and a second engine for disagreement checks.
+3. Read scanned documents (OCR) and feed the engine's confidence into field confidence.
 4. Capture reviewer corrections and use them to grow the label vocabulary and tune the weights.

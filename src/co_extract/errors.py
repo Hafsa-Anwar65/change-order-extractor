@@ -12,7 +12,7 @@ class LoaderError(ChangeOrderError):
 
 
 class NoTextLayerError(LoaderError):
-    """The document has no extractable text (typically a scanned PDF that needs OCR)."""
+    """The document has no extractable text (for example a scanned, image-only PDF)."""
 
 
 class ExtractorError(ChangeOrderError):

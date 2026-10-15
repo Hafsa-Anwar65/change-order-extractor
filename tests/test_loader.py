@@ -27,22 +27,19 @@ def test_missing_file(tmp_path: Path) -> None:
 
 
 def test_unsupported_type(tmp_path: Path) -> None:
-    path = tmp_path / "scan.png"
+    path = tmp_path / "photo.png"
     path.write_bytes(b"\x89PNG")
     with pytest.raises(LoaderError, match="unsupported"):
         load_document(path)
 
 
-def test_scanned_pdf_without_text_layer_asks_for_ocr(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    monkeypatch.setattr("co_extract.ocr.default_engine", lambda: None)
+def test_scanned_pdf_without_text_layer_is_reported_as_unsupported(tmp_path: Path) -> None:
     writer = PdfWriter()
     writer.add_blank_page(width=612, height=792)
     path = tmp_path / "scanned.pdf"
     with path.open("wb") as handle:
         writer.write(handle)
-    with pytest.raises(NoTextLayerError, match="OCR"):
+    with pytest.raises(NoTextLayerError, match="scanned PDFs are not supported"):
         load_document(path)
 
 

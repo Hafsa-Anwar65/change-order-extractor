@@ -146,19 +146,19 @@ PAGE = r"""<!doctype html>
   <section class="hero">
     <div>
       <h1>Read the change order.<em>Trust what checks out.</em></h1>
-      <p class="lede">Drop in a PDF, scan or pasted text. Every field comes back with the line it
+      <p class="lede">Drop in a PDF or pasted text. Every field comes back with the line it
         was read from and a status, and the contract sums are checked so a person only looks
         where it matters.</p>
-      <div class="facts"><span>PDF, scans and text</span><span>Evidence for every value</span>
+      <div class="facts"><span>PDF and text</span><span>Evidence for every value</span>
         <span>Sums checked to the cent</span></div>
     </div>
 
     <section class="card intake" aria-label="Input">
       <h2>Upload a change order</h2>
       <label class="drop" id="drop">
-        <input id="file" type="file" accept=".pdf,.txt,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.webp">
+        <input id="file" type="file" accept=".pdf,.txt">
         <strong>Choose a file</strong> or drop it here
-        <div>PDF, scan, image or text</div>
+        <div>PDF or text</div>
         <div id="picked"></div>
       </label>
       <div class="or">Or paste the text</div>
@@ -231,7 +231,7 @@ function el(tag, text, cls) {
 const tone = (c) => c >= 0.85 ? "var(--ok)" : c >= 0.7 ? "var(--watch)" : "var(--risk)";
 const status = (c) => c >= 0.85 ? "On track" : c >= 0.7 ? "Watch" : "At risk";
 const label = (name) => {
-  const s = name.replaceAll("_", " ").replace(/^ocr/, "OCR");
+  const s = name.replaceAll("_", " ");
   return s[0].toUpperCase() + s.slice(1);
 };
 
