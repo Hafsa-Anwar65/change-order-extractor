@@ -58,7 +58,7 @@ def load_document(path: Path) -> Document:
     elif suffix == ".pdf":
         raw = _read_pdf(path)
     else:
-        raise LoaderError(f"{path}: unsupported file type {suffix!r} (expected .pdf or .txt)")
+        raise LoaderError(f"{path}: unsupported file type {suffix!r} (expected .pdf, .txt or .md)")
 
     text = normalize_text(raw)
     if len(text) < MIN_TEXT_CHARS:
